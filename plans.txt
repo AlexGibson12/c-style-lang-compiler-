@@ -1,0 +1,29 @@
+Basic implementation plan:
+	Allow if statements, Allow else statements, allow while statements, allow for statements
+
+	Do type checking to make sure boolean stuff make sense, only allow comaprisons or integres as the building blocks of boolean expressions
+
+	Do everything on the stack, nothing on the heap for now
+
+	Turn expressions into reverse polish notation for ease of compilation
+
+	Allow printing of integers, by linking the print_number function written in assembly
+
+	print(expression) where expreision type checks to integer
+
+
+	assume everything is an integer, until a boolean operation gets used
+
+! !=	|| && > < == = if while for ; - + * print ( ) identifier = letters by numbers
+
+	can only define integers for now, not doing float operations in asm
+
+	Keep track of variables in a map mampping their relative position compared to the stack
+i = i +1 
+x = 0
+y = x+5
+for(i = 0;i<10; i = i + 1){
+	print(i)
+}
+
+allow taking negatives

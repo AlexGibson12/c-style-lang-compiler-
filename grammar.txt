@@ -1,0 +1,55 @@
+statements :=  statement statements | epsilon
+
+statement := assignment | while loop | for loop | print statement | if else statement 
+
+assignment :=  identifier  ==   expression;
+
+while loop := while (expression) {  statements   }
+
+for loop := for(assignment; expression;assignment){statements}
+
+print statement := print(expression);
+
+if else statement := if(expression){statements}elsestatement
+
+else statements :=   else{statements} | epsilon
+
+expression := 
+
+
+operations   < > <= >= && || + - * == != ! 
+
+order of precedence
+
+*
+
++ -
+
+! 
+
+< <=
+> >=
+
+== !=
+
+&&
+
+||
+3 + 2 <= 5+6
+
+expression := andfactor || orfactor            | andfactor
+andfactor := equalfactor && andfactor | equalfactor
+equalfactor := lessfactor == != equalfactor | lessfactor
+Lessfactor := plusfactor <= >= < > less factor | plusfactor 
+plusfactor := mulfactor +/- plusfactor | mulfactor
+mulfactor := factor * mulfactor | factor
+factor := !(expression)|(expression) | identifier | number
+
+
+
+
+
+
+
+Checking for expressions being booleans i'm counting under semantic analysis, because it makes it easier to implement recursive descent parsing by treating all expressions under one hood.
+
