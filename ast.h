@@ -1,10 +1,9 @@
 #ifndef crap_ast_h
 #define crap_ast_h
-#include "common.h"
-#include "types.h"
+#include "symboltable.h"
 class Statement{
     public:
-        map<string,int> identifiernames;
+        SymbolTable symboltable;
         
 };
 class CompoundStatement : public Statement{
@@ -12,8 +11,6 @@ class CompoundStatement : public Statement{
         Statement* currentstatement ;
         CompoundStatement* nextstatements;
         CompoundStatement(Statement* initcurrentstatement,CompoundStatement* initnextstatements){
-            currentstatement = initcurrentstatement;
-            nextstatements = initnextstatements;
         }
         
 };
@@ -21,16 +18,12 @@ class AssignStatement :public Statement{
     public:
         string identifier;
         Expression* expression;
-        AssignStatement(string initidentifier,Expression* initexpression){
-            identifier = initidentifier;
-            expression = initexpression;
-        }
+        AssignStatement(string initidentifier,Expression* initexpression){}
 };
 class PrintStatement :public Statement{
     public:
         Expression* expression;
         PrintStatement(Expression* initexpression){
-            expression = initexpression;
         }
 };
 class IfStatement :public Statement {
@@ -38,8 +31,6 @@ class IfStatement :public Statement {
         Expression* condition;
         CompoundStatement* statements;
         IfStatement(Expression* initcondition,CompoundStatement* initstatements){
-            condition = initcondition;
-            statements = initstatements;
         }
 };
 class WhileStatement :public Statement{
@@ -47,8 +38,6 @@ class WhileStatement :public Statement{
         Expression* condition;
         CompoundStatement* statements;
         WhileStatement(Expression* initcondition,CompoundStatement* initstatements){
-            condition = initcondition;
-            statements = initstatements;
         }
 };
 class ForStatement : public Statement{
@@ -57,24 +46,32 @@ class ForStatement : public Statement{
         Expression* condition;
         AssignStatement* next;
         ForStatement(AssignStatement* initinitializer, Expression* initcondition,AssignStatement* initnext){
-            initializer = initinitializer;
-            condition = initcondition;
-            next = initnext;
         }
 };
 class Expression{
     public:
-        Type type = UNCOMPLETE;
-        map<string,int> identifiernames;
+        Type type;
+        SymbolTable symboltable;
         void AnnotateTypes();
 
 };
 class Literal: public Expression {
+    public:
+        int value;
+        Literal(int initvalue){
 
-}
+        }
+        void AnnotateTypes(){}
+};
 class Identifier : public Expression {
     public:
-        
+        string identifier;
+        Identifier(string initidentifier){
+
+        }
+        void AnnotateTypes(){
+  
+        }
 };
 
 
@@ -84,24 +81,9 @@ class BinOp : public Expression {
         Expression* expr1;
         Expression* expr2;
         BinOp(Operation* initoperation,Expression* initexpr1,Expression* initexpr2){
-            operation = initoperation;
-            expr1 = initexpr1;
-            expr2 = initexpr2;
-        }
-        void AnnotateTypes(){
-            if(expr1->type == UNCOMPLETE){
-                expr1->AnnotateTypes();
-            }
-            if(expr2->type == UNCOMPLETE){
-                expr2->AnnotateTypes();
-            }
-            if((operation->typetable).find({expr1->type,expr2->type}) != (operation->typetable).end()){
-                type = (operation->typetable)[{expr1->type,expr2->type}];
-            }else{
-                type = UNKNOWN;
-            }
 
         }
+        void AnnotateTypes(){}
             
 
 };
@@ -121,7 +103,5 @@ class LogicalOp : public BinOp {
     {}
         
 };
-void InitializeIdentifiers(CompoundStatement* compound);
-void AnnotateTypes(CompoundStatement* compound);
 
 #endif
