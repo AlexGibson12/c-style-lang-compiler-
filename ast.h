@@ -1,11 +1,27 @@
 #ifndef crap_ast_h
 #define crap_ast_h
 #include "symboltable.h"
+typedef enum {
+    COMPOUND,
+    ASSIGN,
+    PRINT,
+    IF,
+    WHILE,
+    FOR,
+    IFELSE,
+} StatementType; 
+typedef enum {
+    BINARYOP,
+    LITERAL,
+    IDENTIFIER,
+} ExpressionType;
 class Statement{
     public:
+        StatementType statementtype;
         SymbolTable symboltable;
         
 };
+
 class CompoundStatement : public Statement{
     public:
         Statement* currentstatement ;
@@ -33,6 +49,15 @@ class IfStatement :public Statement {
         IfStatement(Expression* initcondition,CompoundStatement* initstatements){
         }
 };
+class IfElseStatement :public Statement {
+    public:
+        Expression* condition;
+        
+        CompoundStatement* valid;
+        CompoundStatement* invalid;
+        IfElseStatement(Expression* initcondition,CompoundStatement* initvalid,CompoundStatement* initinvalid){
+        }
+};
 class WhileStatement :public Statement{
     public:
         Expression* condition;
@@ -45,12 +70,14 @@ class ForStatement : public Statement{
         AssignStatement* initializer;
         Expression* condition;
         AssignStatement* next;
-        ForStatement(AssignStatement* initinitializer, Expression* initcondition,AssignStatement* initnext){
+        CompoundStatement* statements;
+        ForStatement(AssignStatement* initinitializer, Expression* initcondition,AssignStatement* initnext,CompoundStatement* statements){
         }
 };
 class Expression{
     public:
         Type type;
+        ExpressionType expressiontype;
         SymbolTable symboltable;
         void AnnotateTypes();
 
