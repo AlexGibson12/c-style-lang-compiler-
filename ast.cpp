@@ -3,64 +3,133 @@
 CompoundStatement::CompoundStatement(Statement* initcurrentstatement,CompoundStatement* initnextstatements){
             currentstatement = initcurrentstatement;
             nextstatements = initnextstatements;
-            statementtype = COMPOUND;
+            statementtype = STATCOMPOUND;
 }
-CompoundStatement* compoundstatement;
-AssignStatement* assignstatement;
-WhileStatement* whilestatement;
-PrintStatement* printstatement;
-IfStatement* ifstatement;
-IfElseStatement* ifelsestatement;
-ForStatement* forstatement;
-AssignStatement* currentstatement;
+AssignStatement::AssignStatement(string initidentifier,Expression* initexpression){
+            identifier = initidentifier;
+            expression = initexpression;
+            statementtype = STATASSIGN;
+        }
+
+
+PrintStatement::PrintStatement(Expression* initexpression){
+            expression = initexpression;
+            statementtype = STATPRINT;
+        }
+
+
+IfStatement::IfStatement(Expression* initcondition,CompoundStatement* initstatements){
+            condition = initcondition;
+            statements = initstatements;
+            statementtype = STATIF;
+        }
+
+
+IfElseStatement::IfElseStatement(Expression* initcondition,CompoundStatement* initvalid,CompoundStatement* initinvalid){
+    condition = initcondition;
+    valid = initvalid;
+    invalid = initinvalid;    
+    statementtype = STATIFELSE;
+}
+WhileStatement::WhileStatement(Expression* initcondition,CompoundStatement* initstatements){
+            condition = initcondition;
+            statements = initstatements;
+            statementtype = STATWHILE;
+}
+
+
+ForStatement::ForStatement(AssignStatement* initinitializer, Expression* initcondition,AssignStatement* initnext,CompoundStatement* initstatements){
+            initializer = initinitializer;
+            condition = initcondition;
+            next = initnext;
+            statements = initstatements;
+            statementtype = STATFOR;
+        }
+
+
+
+Literal::Literal(int initvalue){
+    type =INT;
+    expressiontype = EXPRLITERAL;
+    value = initvalue;
+}
+
+
+Identifier::Identifier(string initidentifier){
+            identifier = initidentifier;
+            expressiontype = EXPRIDENTIFIER;
+}
+
+
+BinOp::BinOp(Operation* initoperation,Expression* initexpr1,Expression* initexpr2){
+            type = UNCOMPLETE;
+            expressiontype = EXPRBINARYOP;
+            operation = initoperation;
+            expr1 = initexpr1;
+            expr2 = initexpr2;
+            
+
+}
+
 void TrickleSymbolTableDown(Expression* expression){
       switch(expression->expressiontype){
-        case BINARYOP:
+        case EXPRBINARYOP:{
             BinOp* expression = (BinOp*) expression;
             (expression->expr1)->symboltable = expression->symboltable;
             (expression->expr2)->symboltable = expression->symboltable;
             TrickleSymbolTableDown(expression->expr1);
             TrickleSymbolTableDown(expression->expr2);
             break;
+        }
     }
 }
 void TrickleSymbolTableDown(Statement* statement){  // Trickles symbol table down
         switch(statement->statementtype){
-        case COMPOUND:
-            compoundstatement = (CompoundStatement*) statement;
+        case STATCOMPOUND:{
+            
+           Statement* compoundstatement =  statement;
           
             (compoundstatement->currentstatement)->symboltable = compoundstatement->symboltable;
+            if(compoundstatement->nextstatements){
             (compoundstatement->nextstatements)->symboltable = compoundstatement->symboltable;
+            }
             TrickleSymbolTableDown(compoundstatement->currentstatement);
+            if(compoundstatement->nextstatements){
             TrickleSymbolTableDown(compoundstatement->nextstatements);
+            }
             
             break;
-        case ASSIGN:
-            assignstatement = (AssignStatement*) statement;
+        }
+        case STATASSIGN:{
+            Statement* assignstatement = statement;
             (assignstatement->expression)->symboltable = assignstatement->symboltable;
             TrickleSymbolTableDown(assignstatement->expression);
             break;
-        case WHILE:
-            whilestatement = (WhileStatement*) statement;
+        }
+        case STATWHILE:{
+           Statement* whilestatement =  statement;
             (whilestatement->condition)->symboltable = whilestatement->symboltable;
             (whilestatement->statements)->symboltable = whilestatement->symboltable;
             TrickleSymbolTableDown(whilestatement->condition);
             TrickleSymbolTableDown(whilestatement->statements);
             break;
-        case PRINT:
-            printstatement = (PrintStatement*) statement;
+        }
+        case STATPRINT:{
+            Statement* printstatement =  statement;
             (printstatement->expression)->symboltable = printstatement->symboltable;
             TrickleSymbolTableDown(printstatement->expression);
             break;
-        case IF:
-            ifstatement = (IfStatement*) statement;
+        }
+        case STATIF:{
+            Statement* ifstatement = statement;
             (ifstatement->condition)->symboltable = ifstatement->symboltable;
             (ifstatement->statements)->symboltable = ifstatement->symboltable;
             TrickleSymbolTableDown(ifstatement->condition);
             TrickleSymbolTableDown(ifstatement->statements);
             break;
-        case IFELSE:
-            ifelsestatement = (IfElseStatement*) statement;
+        }
+        case STATIFELSE:{
+            Statement* ifelsestatement = statement;
             (ifelsestatement->condition)->symboltable = ifelsestatement->symboltable;
             (ifelsestatement->valid)->symboltable = ifelsestatement->symboltable;
             (ifelsestatement->invalid)->symboltable = ifelsestatement->symboltable;
@@ -68,8 +137,9 @@ void TrickleSymbolTableDown(Statement* statement){  // Trickles symbol table dow
             TrickleSymbolTableDown(ifelsestatement->valid);
             TrickleSymbolTableDown(ifelsestatement->invalid);
             break;
-        case FOR:
-            forstatement = (ForStatement*) statement;
+        }
+        case STATFOR:{
+            Statement* forstatement = statement;
             (forstatement->initializer)->symboltable = forstatement->symboltable;
             (forstatement->condition)->symboltable = forstatement->symboltable;
             (forstatement->next)->symboltable = forstatement->symboltable;
@@ -79,49 +149,61 @@ void TrickleSymbolTableDown(Statement* statement){  // Trickles symbol table dow
             TrickleSymbolTableDown(forstatement->next);
             TrickleSymbolTableDown(forstatement->statements);
             break;
+        }
     }
 }
 
-void TrickleStartSymbolTable(Statement* statement){            // Trickles symbol table down, but avoids giving assign statements references to elements it declares.
+void TrickleStartSymbolTable(Statement* statement){  
     switch(statement->statementtype){
-        case COMPOUND:
-            compoundstatement = (CompoundStatement*) statement;
-            if((compoundstatement->currentstatement)->statementtype == ASSIGN){
-                (compoundstatement->nextstatements)->symboltable = compoundstatement->symboltable;
+        case STATCOMPOUND:{
+            Statement* compoundstatement =statement;
+            if((compoundstatement->currentstatement)->statementtype == STATASSIGN){
+                 if(compoundstatement->nextstatements){
+                (compoundstatement->nextstatements)->symboltable = (compoundstatement->symboltable);
                 TrickleSymbolTableDown(compoundstatement->nextstatements);
+                 }
             }else{
                 (compoundstatement->currentstatement)->symboltable = compoundstatement->symboltable;
+                if(compoundstatement->nextstatements){
                 (compoundstatement->nextstatements)->symboltable = compoundstatement->symboltable;
+                }
                 TrickleSymbolTableDown(compoundstatement->currentstatement);
+                if(compoundstatement->nextstatements){
                 TrickleSymbolTableDown(compoundstatement->nextstatements);
+                }
             }
             break;
-        case ASSIGN:
-            assignstatement = (AssignStatement*) statement;
+        }
+        case STATASSIGN:{
+            Statement* assignstatement = statement;
             (assignstatement->expression)->symboltable = assignstatement->symboltable;
             TrickleSymbolTableDown(assignstatement->expression);
             break;
-        case WHILE:
-            whilestatement = (WhileStatement*) statement;
+        }
+        case STATWHILE:{
+            Statement* whilestatement =statement;
             (whilestatement->condition)->symboltable = whilestatement->symboltable;
             (whilestatement->statements)->symboltable = whilestatement->symboltable;
             TrickleSymbolTableDown(whilestatement->condition);
             TrickleSymbolTableDown(whilestatement->statements);
             break;
-        case PRINT:
-            printstatement = (PrintStatement*) statement;
+        }
+        case STATPRINT:{
+            Statement* printstatement =  statement;
             (printstatement->expression)->symboltable = printstatement->symboltable;
             TrickleSymbolTableDown(printstatement->expression);
             break;
-        case IF:
-            ifstatement = (IfStatement*) statement;
+        }
+        case STATIF:{
+            Statement* ifstatement = statement;
             (ifstatement->condition)->symboltable = ifstatement->symboltable;
             (ifstatement->statements)->symboltable = ifstatement->symboltable;
             TrickleSymbolTableDown(ifstatement->condition);
             TrickleSymbolTableDown(ifstatement->statements);
             break;
-        case IFELSE:
-            ifelsestatement = (IfElseStatement*) statement;
+        }
+        case STATIFELSE:{
+            Statement* ifelsestatement =statement;
             (ifelsestatement->condition)->symboltable = ifelsestatement->symboltable;
             (ifelsestatement->valid)->symboltable = ifelsestatement->symboltable;
             (ifelsestatement->invalid)->symboltable = ifelsestatement->symboltable;
@@ -129,8 +211,9 @@ void TrickleStartSymbolTable(Statement* statement){            // Trickles symbo
             TrickleSymbolTableDown(ifelsestatement->valid);
             TrickleSymbolTableDown(ifelsestatement->invalid);
             break;
-        case FOR:
-            forstatement = (ForStatement*) statement;
+        }
+        case STATFOR:{
+            Statement* forstatement =  statement;
             (forstatement->condition)->symboltable = forstatement->symboltable;
             (forstatement->next)->symboltable = forstatement->symboltable;
             (forstatement->statements)->symboltable = forstatement->symboltable;
@@ -138,17 +221,18 @@ void TrickleStartSymbolTable(Statement* statement){            // Trickles symbo
             TrickleSymbolTableDown(forstatement->next);
             TrickleSymbolTableDown(forstatement->statements);
             break;
+        }
     }
 }
 
 void CompleteSymbolTables(Statement* statement){
+    Statement* compoundstatement = statement;
     switch(statement->statementtype){
-        case COMPOUND:
-            compoundstatement =(CompoundStatement*) statement;
-
-            if((compoundstatement->currentstatement)->statementtype == ASSIGN){
-                currentstatement = (AssignStatement*) (compoundstatement->currentstatement);
-                appendsymbol(compoundstatement->symboltable,currentstatement->identifier);  
+        
+        case STATCOMPOUND:{
+            if((compoundstatement->currentstatement)->statementtype == STATASSIGN){
+                Statement* currentstatement =  (compoundstatement->currentstatement);
+                compoundstatement->symboltable.appendsymbol(currentstatement->identifier);  
                 TrickleStartSymbolTable(compoundstatement);
                 if(compoundstatement->nextstatements){
                 CompleteSymbolTables(compoundstatement->nextstatements);
@@ -159,19 +243,23 @@ void CompleteSymbolTables(Statement* statement){
                     CompleteSymbolTables(compoundstatement->nextstatements);
                 }
             }
+
             break;
-        case FOR:
-            forstatement =(ForStatement*) statement;
-            currentstatement = (AssignStatement*) (compoundstatement->currentstatement);
-            appendsymbol(forstatement->symboltable,currentstatement->identifier);  
+        }
+        case STATFOR:{
+            Statement* forstatement = statement;
+            Statement* currentstatement =  (compoundstatement->currentstatement);
+            forstatement->symboltable.appendsymbol(currentstatement->identifier);  
             TrickleStartSymbolTable(forstatement);
             if(forstatement->statements){
             CompleteSymbolTables(forstatement->statements);
             }
             break;
-        default:
+        }
+        default:{
             TrickleStartSymbolTable(statement);
             break;
+        }
     }
 
 

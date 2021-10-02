@@ -149,22 +149,4 @@ vector<Token> Lexer::tokenize(){
     }
     return tokens;
 }
-int main( ){
-    
-    ifstream fin;
-    fin.open("input.txt",ios::in);
-    string x;
-    string input;
-    while(fin >> x){
-        input+=x;
-        input += " ";
-    }
-    
-    Lexer lex = Lexer(input);
 
-    vector<Token> tokens = lex.tokenize();
-    for(auto x:tokens){
-        cout << x.name << " " << tokennames[x.type] << " " << x.value << endl;
-    }
-
-}
