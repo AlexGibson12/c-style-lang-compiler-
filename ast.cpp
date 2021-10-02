@@ -72,9 +72,9 @@ BinOp::BinOp(Operation* initoperation,Expression* initexpr1,Expression* initexpr
 }
 
 void TrickleSymbolTableDown(Expression* expression){
+        cout << "GOT TO EXPRESSIONS " << endl;
       switch(expression->expressiontype){
         case EXPRBINARYOP:{
-            BinOp* expression = (BinOp*) expression;
             (expression->expr1)->symboltable = expression->symboltable;
             (expression->expr2)->symboltable = expression->symboltable;
             TrickleSymbolTableDown(expression->expr1);
@@ -88,7 +88,7 @@ void TrickleSymbolTableDown(Statement* statement){  // Trickles symbol table dow
         case STATCOMPOUND:{
             
            Statement* compoundstatement =  statement;
-          
+            cout << "AT THE MAIN COMPOUND " << endl;
             (compoundstatement->currentstatement)->symboltable = compoundstatement->symboltable;
             if(compoundstatement->nextstatements){
             (compoundstatement->nextstatements)->symboltable = compoundstatement->symboltable;
@@ -115,6 +115,7 @@ void TrickleSymbolTableDown(Statement* statement){  // Trickles symbol table dow
             break;
         }
         case STATPRINT:{
+            cout << "GOT HERE" << endl;
             Statement* printstatement =  statement;
             (printstatement->expression)->symboltable = printstatement->symboltable;
             TrickleSymbolTableDown(printstatement->expression);
@@ -158,6 +159,7 @@ void TrickleStartSymbolTable(Statement* statement){
         case STATCOMPOUND:{
             Statement* compoundstatement =statement;
             if((compoundstatement->currentstatement)->statementtype == STATASSIGN){
+                cout << "HERE" << endl;
                  if(compoundstatement->nextstatements){
                 (compoundstatement->nextstatements)->symboltable = (compoundstatement->symboltable);
                 TrickleSymbolTableDown(compoundstatement->nextstatements);
@@ -227,14 +229,19 @@ void TrickleStartSymbolTable(Statement* statement){
 
 void CompleteSymbolTables(Statement* statement){
     Statement* compoundstatement = statement;
+    cout << "WIWNWAG" << endl;
     switch(statement->statementtype){
         
         case STATCOMPOUND:{
             if((compoundstatement->currentstatement)->statementtype == STATASSIGN){
                 Statement* currentstatement =  (compoundstatement->currentstatement);
                 compoundstatement->symboltable.appendsymbol(currentstatement->identifier);  
+                cout << "WIWNWAG" << endl;
                 TrickleStartSymbolTable(compoundstatement);
+                cout << "WIWNWAG" << endl;
+               
                 if(compoundstatement->nextstatements){
+                cout << "WIWNWAG" << endl;
                 CompleteSymbolTables(compoundstatement->nextstatements);
                 }
             }else{
