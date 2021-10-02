@@ -2,6 +2,48 @@ statements :=  statement statements | epsilon
 
 statement := assignment | while loop | for loop | print statement | if else statement 
 
+
+x  =  5 
+
+identifier = 5
+5
+if(identifier in table){
+    emit expression
+}else{
+    emit expression
+    pop rax
+    mov [rbp+position in table],rax
+}
+
+
+We need a notion of scope
+
+Every brace  implies 
+{
+    {
+        {
+            {
+
+            }
+        }
+    }
+
+}
+
+   emit(variables)
+
+while (expression)         {statements}
+                            {
+                                'x':-4
+                                'y':-8
+
+emit(variables,                              
+
+
+                            }
+
+
+
 assignment :=  identifier  ==   expression;
 
 while loop := while (expression) {  statements   }
@@ -49,7 +91,45 @@ factor := !(expression)|(expression) | identifier | number
 
 
 
-
-
 Checking for expressions being booleans i'm counting under semantic analysis, because it makes it easier to implement recursive descent parsing by treating all expressions under one hood.
 
+
+
+
+expression
+
+Statement
+
+Statements
+
+program : statements()
+
+statements := statement statements | notihing
+
+node - statement() statemenets()
+
+statement := compoundstatement | while(expression) compoundstatement | for(assignment;expression;assignment)compound statement | if(expression)compoundstatement else compoundstatement | if(expression) compoundstatement
+                  | assignmnt | print(expression)
+ 
+Compoundstatement :=   {statements}
+
+emit_code(context):
+
+
+    identifier = [rbp-number]
+expression :=   plusfactor rightgreater
+rightgreat :=     < plus factor rightgreat             | epsilon
+
+
+
+plusfactor :=  factor + plusfactor | factor
+factor := (expression) | identifier | number
+
+Dealing with blocks. 
+
+
+When evaluating global
+
+Pass the thing to the expression 
+
+expression

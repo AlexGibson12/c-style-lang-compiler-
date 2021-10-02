@@ -28,10 +28,11 @@ typedef enum {
 	RBRACE,
 	BANGEQUALS,
 	NOT,
+	RETURN,
 } TokenType;
-map<TokenType,string> tokennames {{OR,"||"},{AND,"&&"},{IDENTIFIER,"IDENTIFIER"},{LT,"LESS THAN"},{LTE,"LESS THAN OR EQUAL"},{GTE,"GREATER THAN OR EQUAL"},{GT,"GREATER THAN"},{EQUALSEQUALS,"EQUALSEQUALS"},{ASSIGNMENT,"ASSIGN"},
-{IF,"IF"},{WHILE,"WHILE"},{FOR,"FOR"},{ELSE,"ELSE"},{SEMICOLON,"SEMICOLON"},{MINUS,"MINUS"},{PLUS,"PLUS"},{TIMES,"TIMES"},{PRINT,"PRINT"},{LB,"LEFTBRACKET"},{RB,"RIGHTBRACKET"},{NUMBER,"NUM"},{LBRACE,"LBRACE"},{RBRACE,"RBRACE"},{"BANGEQUALS",BANGEQUALS},{"NOT",NOT}};
-map<string,TokenType> keywords ={{"for",FOR},{"while",WHILE},{"if",IF},{"or",OR},{"and",AND},{"else",ELSE},{"print",PRINT}};
+map<TokenType,string> tokennames  = {{RETURN,"RETURN"},{OR,"||"},{AND,"&&"},{IDENTIFIER,"IDENTIFIER"},{LT,"LESS THAN"},{LTE,"LESS THAN OR EQUAL"},{GTE,"GREATER THAN OR EQUAL"},{GT,"GREATER THAN"},{EQUALSEQUALS,"EQUALSEQUALS"},{ASSIGNMENT,"ASSIGN"},
+{IF,"IF"},{WHILE,"WHILE"},{FOR,"FOR"},{ELSE,"ELSE"},{SEMICOLON,"SEMICOLON"},{MINUS,"MINUS"},{PLUS,"PLUS"},{TIMES,"TIMES"},{PRINT,"PRINT"},{LB,"LEFTBRACKET"},{RB,"RIGHTBRACKET"},{NUMBER,"NUM"},{LBRACE,"LBRACE"},{RBRACE,"RBRACE"},{BANGEQUALS,"BANGEQUALS"},{NOT,"NOT"}};
+map<string,TokenType> keywords ={{"for",FOR},{"return",RETURN},{"while",WHILE},{"if",IF},{"or",OR},{"and",AND},{"else",ELSE},{"print",PRINT}};
 typedef struct {
 	TokenType type;
 	int value;
@@ -39,7 +40,7 @@ typedef struct {
 }	Token;
 class Lexer {
 	public:
-		int inputpointer;
+		long unsigned int inputpointer;
 		string input;
 		Lexer(string initialinput);
 		vector<Token> tokenize();
