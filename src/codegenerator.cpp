@@ -26,11 +26,71 @@ string CodeGenerator::emitCode(Operation* operation){
         case OPMINUS:{
             return "sub rax,rdx\n";
         }
+        case OPEQUAL:{
+            string x;
+            
+            x+="cmp rax,rdx\n";
+            x+=("je .valid" + to_string(maxlabel) + "\n");
+            x+=("jmp .invalid" + to_string(maxlabel+1) + "\n");
+            x+=(".valid" + to_string(maxlabel) + ":\n");
+            x+=("mov rax,1\n");
+            x+=("jmp .either" + to_string(maxlabel+2) + "\n");
+            x+=(".invalid" + to_string(maxlabel+1) + ":\n");
+            x+=("mov rax,0\n");
+            x+=(".either" + to_string(maxlabel+2) + ":\n");
+            maxlabel+=3;
+            return x;
+        }
         case OPLT:{
             string x;
             
             x+="cmp rax,rdx\n";
             x+=("jl .valid" + to_string(maxlabel) + "\n");
+            x+=("jmp .invalid" + to_string(maxlabel+1) + "\n");
+            x+=(".valid" + to_string(maxlabel) + ":\n");
+            x+=("mov rax,1\n");
+            x+=("jmp .either" + to_string(maxlabel+2) + "\n");
+            x+=(".invalid" + to_string(maxlabel+1) + ":\n");
+            x+=("mov rax,0\n");
+            x+=(".either" + to_string(maxlabel+2) + ":\n");
+            maxlabel+=3;
+            return x;
+        }
+        case OPLTE:{
+            string x;
+            
+            x+="cmp rax,rdx\n";
+            x+=("jng .valid" + to_string(maxlabel) + "\n");
+            x+=("jmp .invalid" + to_string(maxlabel+1) + "\n");
+            x+=(".valid" + to_string(maxlabel) + ":\n");
+            x+=("mov rax,1\n");
+            x+=("jmp .either" + to_string(maxlabel+2) + "\n");
+            x+=(".invalid" + to_string(maxlabel+1) + ":\n");
+            x+=("mov rax,0\n");
+            x+=(".either" + to_string(maxlabel+2) + ":\n");
+            maxlabel+=3;
+            return x;
+        }
+        case OPGT:{
+            string x;
+            
+            x+="cmp rax,rdx\n";
+            x+=("jg .valid" + to_string(maxlabel) + "\n");
+            x+=("jmp .invalid" + to_string(maxlabel+1) + "\n");
+            x+=(".valid" + to_string(maxlabel) + ":\n");
+            x+=("mov rax,1\n");
+            x+=("jmp .either" + to_string(maxlabel+2) + "\n");
+            x+=(".invalid" + to_string(maxlabel+1) + ":\n");
+            x+=("mov rax,0\n");
+            x+=(".either" + to_string(maxlabel+2) + ":\n");
+            maxlabel+=3;
+            return x;
+        }
+        case OPGTE:{
+            string x;
+            
+            x+="cmp rax,rdx\n";
+            x+=("jnl .valid" + to_string(maxlabel) + "\n");
             x+=("jmp .invalid" + to_string(maxlabel+1) + "\n");
             x+=(".valid" + to_string(maxlabel) + ":\n");
             x+=("mov rax,1\n");
@@ -164,6 +224,7 @@ string  CodeGenerator::emitCode(Statement* statement){
                 x+=("jmp .done" + to_string(endlabel) + "\n");
                 x+=(".elsestat" + to_string(elselabel) + ":\n");
                 x+=emitCode(statement->invalid);
+                x+=("jmp .done" + to_string(endlabel) + "\n");
                 x+=(".done" + to_string(endlabel)+":\n");
                 maxlabel+=1;
                 return x;

@@ -48,10 +48,25 @@ Expression* Parser::expression(){
 Expression* Parser::GreaterRight(){
     Expression* plusfactore = PlusFactor();
     RelationalOperator* reloperator = new RelationalOperator(OPLT);
-   
-    while(currenttoken.type == LT){
+    RelationalOperator* loperator = new RelationalOperator(OPLT);
+    RelationalOperator* leoperator = new RelationalOperator(OPLTE);
+    RelationalOperator* geoperator = new RelationalOperator(OPGTE);
+    RelationalOperator* goperator = new RelationalOperator(OPGT);
+    RelationalOperator* equaloperator = new RelationalOperator(OPEQUAL);
+    while(currenttoken.type == EQUALSEQUALS or currenttoken.type == LT or currenttoken.type == LTE or currenttoken.type == GT or currenttoken.type == GTE){
+        if(currenttoken.type == LT){
+            reloperator = loperator;
+        }else if(currenttoken.type == LTE){
+            reloperator = leoperator;
+        }else if(currenttoken.type == GT){
+            reloperator = goperator;
+        }else if (currenttoken.type == GTE){
+            reloperator = geoperator;
+        }else if(currenttoken.type == EQUALSEQUALS){
+            reloperator = equaloperator;
+        }
         Match('<');
-    
+        
         Expression* nextfactor = PlusFactor();
  
         plusfactore = new RelOp{reloperator,plusfactore,nextfactor};

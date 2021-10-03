@@ -7,11 +7,11 @@ mov rbp,rsp
 push 0
 .while1:
 push qword [rbp-8]
-push 100
+push 5
 pop rdx
 pop rax
 cmp rax,rdx
-jl .valid1
+jng .valid1
 jmp .invalid2
 .valid1:
 mov rax,1
@@ -32,11 +32,11 @@ push rax
 pop rax
 mov [rbp-8], rax
 push qword [rbp-8]
-push 50
+push 3
 pop rdx
 pop rax
 cmp rax,rdx
-jl .valid5
+je .valid5
 jmp .invalid6
 .valid5:
 mov rax,1
@@ -48,22 +48,12 @@ push rax
 pop rax
 cmp rax,0
 jne .ifstat5
-jmp .elsestat9
+jmp .done8
 .ifstat5:
 push qword [rbp-8]
 pop rax
 call print_number
-jmp .done10
-.elsestat9:
-push qword [rbp-8]
-push qword [rbp-8]
-pop rdx
-pop rax
-add rax,rdx
-push rax
-pop rax
-call print_number
-.done10:
+.done8:
 jmp .while1
 .pastwhile5:
 mov rax,60
