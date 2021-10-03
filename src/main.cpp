@@ -16,15 +16,10 @@ int main(int argc, char** argv){
     }
     Lexer lex = Lexer(input);
     vector<Token> tokens = lex.tokenize();
-   for(auto x: tokens){
-       cout << x.name << endl;
-   }
     Parser parse = Parser(tokens);
 
     CompoundStatement* statementsa = parse.Parse();
-    cout << "PARSED" << endl;
     CompleteSymbolTables(statementsa);
-    cout << "GOT PAST SYMBOLS" << endl;
     CodeGenerator  codegen = CodeGenerator(statementsa);
     if(CheckScope(statementsa)){
         
@@ -32,7 +27,7 @@ int main(int argc, char** argv){
         system(x.c_str());
         x = "nasm -felf64 output.s -o output.o";
         system(x.c_str());
-        x = "ld output.o ./lib/printnumber.o -o output";
+        x = "ld output.o ./lib/printing.o -o output";
         system(x.c_str());
         x = "./output";
         system(x.c_str());

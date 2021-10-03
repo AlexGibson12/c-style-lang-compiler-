@@ -1,0 +1,11 @@
+a = 0;
+while(a<32){
+	b = a;
+	while(b<32){
+		print(a);
+		print(1111);
+		print(b);
+		b = b+1;
+	}
+	a = a+1;
+}

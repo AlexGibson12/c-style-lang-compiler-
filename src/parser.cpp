@@ -158,7 +158,6 @@ Statement* Parser::consumeifelse(){
         return ifelsestat;
     }else{
         Statement* ifstat = new IfStatement {cond,compoundstat};
-        cout << "GOT HERE";
         return ifstat;
     }
 }

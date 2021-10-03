@@ -26,10 +26,12 @@ string CodeGenerator::emitCode(Operation* operation){
         case OPMODULO:{
             string x;
             x+="push rcx\n";
+            maxstack +=1;
             x+="mov rcx,rdx\n";
             x+="xor rdx,rdx\n";
             x+= "div rcx\n";
             x+="pop rcx\n";
+            maxstack-=1;
             x+= "mov rax,rdx\n";
             return x;
         }
@@ -163,15 +165,17 @@ string  CodeGenerator::emitCode(Statement* statement){
                 if(statement->nextstatements){
                     x+=emitCode(statement->currentstatement);
                     x+=emitCode(statement->nextstatements);
-                    for(int i = 0;i<maxstack-currentstack-1;i++){
+                    for(int i = 0;i<maxstack-currentstack;i++){
                         x+= "pop rax\n";
                     }
+                    maxstack = currentstack;
                     return x;
                 }else{
                     x += emitCode(statement->currentstatement);
-                    for(int i = 0;i<maxstack-currentstack-1;i++){
+                    for(int i = 0;i<maxstack-currentstack;i++){
                         x+= "pop rax\n";
                     }
+                    maxstack = currentstack;
                     return x;
                 }
                 break;
@@ -205,6 +209,7 @@ string  CodeGenerator::emitCode(Statement* statement){
                
                 x+=emitCode(statement->condition);
                 int pastlabel = maxlabel+1;
+                maxlabel +=1;
                 x+="pop rax\n";
                 maxstack-=1;
                 x+="cmp rax,0\n";
@@ -219,7 +224,6 @@ string  CodeGenerator::emitCode(Statement* statement){
             case STATIFELSE:{
                 string x;
              
-                cout << "GOT HERE";
                 maxlabel+=1;
                 int iflabel = maxlabel;
                 x+=emitCode(statement->condition);
@@ -245,7 +249,6 @@ string  CodeGenerator::emitCode(Statement* statement){
             }
             case STATIF:{
                 string x;
-                cout << "GOT HERE";
                 maxlabel+=1;
                 int iflabel = maxlabel;
                 x+=emitCode(statement->condition);
