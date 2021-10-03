@@ -165,14 +165,20 @@ int main(){
     CompleteSymbolTables(statementsa);
    
     if(CheckScope(statementsa)){
-        string x = "echo \"" + emitProgram(statementsa) + "\"" + "|" + " tee " + "output.s";
+        string x = "echo \"" + emitProgram(statementsa) + "\" >output.s";
         system(x.c_str());
         x = "nasm -felf64 output.s -o output.o";
         system(x.c_str());
-        x = "ld output.o fibonacci.o -o output";
+        x = "ld output.o ./lib/printnumber.o -o output";
+        system(x.c_str());
+        x = "rm output.o";
+        system(x.c_str());
+        x = "rm output.s";
+        system(x.c_str());
+        x = "./output";
         system(x.c_str());
     }else{
-
+        cout << "Invalid code";
     }
     
 

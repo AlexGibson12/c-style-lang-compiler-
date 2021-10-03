@@ -1,3 +1,9 @@
 var = 10;
 y = var + var;
-print(var+y);
+print(var+y + var);
+z = var;
+print(z);
+{
+	w = 1;
+	print(w);
+}

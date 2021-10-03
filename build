@@ -1,0 +1,2 @@
+#!/bin/bash
+g++   ./src/parser.cpp ./src/ast.cpp ./src/lexer.cpp ./src/symboltable.cpp  -o compiler > /dev/null
