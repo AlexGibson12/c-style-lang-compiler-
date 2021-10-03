@@ -1,2 +1,2 @@
 #!/bin/bash
-g++   ./src/parser.cpp ./src/ast.cpp ./src/lexer.cpp ./src/symboltable.cpp  ./src/scope.cpp -o compiler > /dev/null
+g++ ./src/main.cpp  ./src/parser.cpp ./src/ast.cpp ./src/lexer.cpp ./src/codegenerator.cpp ./src/symboltable.cpp  ./src/scope.cpp -o compiler > /dev/null

@@ -45,7 +45,7 @@ Expression* Parser::expression(){
     Expression*  plusfactor = PlusFactor();
     Expression * right = GreaterRight();
     if(right){
-        RelationalOperator* reloperator = new RelationalOperator("<","");
+        RelationalOperator* reloperator = new RelationalOperator(OPLT);
         Expression* expressionstuff = new RelOp {reloperator,plusfactor,right};
     }else{
         return plusfactor;
@@ -58,7 +58,7 @@ Expression* Parser::GreaterRight(){
          Expression* plusfactore = PlusFactor();
          Expression* right = GreaterRight();
          if(right){
-             RelationalOperator* reloperator = new RelationalOperator("<","");
+             RelationalOperator* reloperator = new RelationalOperator(OPLT);
              Expression* expressionstuff = new RelOp {reloperator,plusfactore,right};
          }else{
              return plusfactore;
@@ -70,11 +70,20 @@ Expression* Parser::GreaterRight(){
 }
 Expression* Parser::PlusFactor(){
     Expression* factore = Factor();
-    ArithmeticOperator* addoperator = new ArithmeticOperator{"+","add rax,rdx\n"};
-    while(currenttoken.type == PLUS){
+    ArithmeticOperator* mainoperator;
+    ArithmeticOperator* addoperator = new ArithmeticOperator{OPPLUS};
+    ArithmeticOperator* minusoperator = new ArithmeticOperator(OPMINUS);
+    while(currenttoken.type == PLUS or currenttoken.type == MINUS){
+            if(currenttoken.type == PLUS){
+            mainoperator = addoperator;
+        }else{
+            mainoperator = minusoperator;
+        }
         Match('+');
+     
         Expression* nextfactor = Factor();
-        factore = new ArithmeticOp{addoperator,factore,nextfactor};
+       
+        factore = new ArithmeticOp{mainoperator,factore,nextfactor};
     }
     return factore;
 }
@@ -147,42 +156,5 @@ CompoundStatement* Parser::compound(){
  
     return resultstate;
 }
-int main(){
-    ifstream fin;
-    fin.open("input.txt",ios::in);
-    string input;
-    string x;
-    while(fin >> x){
-        input += x;
-        x += " ";
-    }
-    Lexer lex = Lexer(input);
-    vector<Token> tokens = lex.tokenize();
-    Parser parse = Parser(tokens);
-
-    CompoundStatement* statementsa = parse.Parse();
-
-    CompleteSymbolTables(statementsa);
-   
-    if(CheckScope(statementsa)){
-        string x = "echo \"" + emitProgram(statementsa) + "\" >output.s";
-        system(x.c_str());
-        x = "nasm -felf64 output.s -o output.o";
-        system(x.c_str());
-        x = "ld output.o ./lib/printnumber.o -o output";
-        system(x.c_str());
-        x = "rm output.o";
-        system(x.c_str());
-        x = "rm output.s";
-        system(x.c_str());
-        x = "./output";
-        system(x.c_str());
-    }else{
-        cout << "Invalid code";
-    }
-    
-
-}
-
 
 

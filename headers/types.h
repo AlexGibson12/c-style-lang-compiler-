@@ -7,11 +7,23 @@ typedef enum {
     UNKNOWN,
     UNCOMPLETE,
 } Type;
+typedef enum {
+    OPPLUS,
+    OPTIMES,
+    OPMOD,
+    OPMINUS,
+    OPAND,
+    OPOR,
+    OPLT,
+    OPLTE,
+    OPGT,
+    OPGTE,
+    OPNOT,
+} OperationType;
 class Operation {
     public:
         map<pair<Type,Type>,Type> typetable;
-        string operation;
-        string code;
+        OperationType operation;
 
         Type newType(Type type1, Type type2){
             pair<Type,Type> typepair = {type1,type2};
@@ -25,27 +37,25 @@ class Operation {
 };
 class RelationalOperator : public Operation {
     public:
-        RelationalOperator(string initoperation,string initcode){
+        RelationalOperator(OperationType initoperation){
             typetable = {{{INT,INT},BOOL},{{INT,BOOL},UNKNOWN},{{BOOL,INT},UNKNOWN},{{BOOL,BOOL},UNKNOWN}};
             operation = initoperation;
-            code = initcode;
+
         }
 };
 class ArithmeticOperator : public Operation {
     public:
-         ArithmeticOperator(string initoperation,string initcode){
+         ArithmeticOperator(OperationType initoperation){
             typetable = {{{INT,INT},INT},{{INT,BOOL},UNKNOWN},{{BOOL,INT},UNKNOWN},{{BOOL,BOOL},UNKNOWN}};
             operation = initoperation;
-            code = initcode;
         }
         
 };
 class LogicalOperator : public Operation {
     public:
-         LogicalOperator(string initoperation,string initcode){
+         LogicalOperator(OperationType initoperation){
             typetable = {{{INT,INT},UNKNOWN},{{INT,BOOL},UNKNOWN},{{BOOL,INT},UNKNOWN},{{BOOL,BOOL},BOOL}};
             operation = initoperation;
-            code = initcode;
         }
 };
 

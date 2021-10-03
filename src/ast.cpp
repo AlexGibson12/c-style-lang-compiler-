@@ -1,5 +1,5 @@
 #include "../headers/ast.h"
-
+#include "../headers/scope.h"
 CompoundStatement::CompoundStatement(Statement* initcurrentstatement,CompoundStatement* initnextstatements){
             currentstatement = initcurrentstatement;
             nextstatements = initnextstatements;
@@ -17,90 +17,7 @@ PrintStatement::PrintStatement(Expression* initexpression){
             statementtype = STATPRINT;
            
         }
-string emitProgram(Statement* statement){
-    string x;
-    x += "global _start\n";
-    x += "extern print_number\n";
-    x += "section .text:\n";
-    x += "     _start:\n";
-    x += "push rbp\n";
-    x += "mov rbp,rsp\n";
-    x += emitCode(statement);
-    x += "mov rax,60\n";
-    x += "syscall\n";
-    return x;
-}
-string emitCode(Operation* operation){
-    return operation->code;   
-}
-string emitCode(Expression* expression){
-    if(expression){
-        switch(expression->expressiontype){
-            case EXPRBINARYOP:{
-                  string x;
-                  x += emitCode(expression->expr1);
-                  x += emitCode(expression->expr2);
-                  x += "pop rax\n";
-                  x += "pop rdx\n";
-                  x += emitCode(expression->operation);
-                  x += "push rax\n";
-                  return x;
-                break;
-            }
-            case EXPRIDENTIFIER:{
-                string x = "push qword [rbp-" + to_string(8*(expression->symboltable.maintable[expression->identifier]->baseoffset))  + "]\n";
-                return x;
-                break;
-            }
-            case EXPRLITERAL:{
-                string x;
-                x+= "push " + to_string(expression->value) + "\n";
-                return x;
-                break;
-            }
-        }
-    }else{
-        return "";
-    }
-}
 
-string  emitCode(Statement* statement){
-    if(statement){
-        switch(statement->statementtype){
-            case STATCOMPOUND:{
-                string x;
-                if(statement->nextstatements){
-                    x+=emitCode(statement->currentstatement);
-                    x+=emitCode(statement->nextstatements);
-                    return x;
-                }else{
-                    return emitCode(statement->currentstatement);
-                }
-                break;
-            }
-            case STATASSIGN:{
-                 string x;
-                 x += emitCode(statement->expression);
-                if(statement->symboltable.maintable.find(statement->identifier) != statement->symboltable.maintable.end()){
-                    x +=  "pop rax\n";
-                    x += ("mov [rbp-" + to_string(8*(statement->symboltable.maintable[statement->identifier]->baseoffset)) + "], rax\n");
-                }
-                return x;
-                break;
-                        }
-            case STATPRINT:{
-                    string x;
-                    x+=emitCode(statement->expression);
-                    x += "pop rax\n";
-                    x += "call print_number\n";
-                    return x;
-                    break;
-            }
-        }
-    }else{
-        return "";
-    }
-}
 IfStatement::IfStatement(Expression* initcondition,CompoundStatement* initstatements){
             condition = initcondition;
             statements = initstatements;

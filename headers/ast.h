@@ -130,11 +130,5 @@ class LogicalOp : public BinOp {
         
 };
 
-void CompleteSymbolTables(Statement* statement);
-void TrickleStartSymbolTable(Statement* statement);
-void TrickleSymbolTableDown(Statement* statement);
-string emitCode(Statement* statement);
-string emitCode(Operation* operation);
-string emitCode(Expression* expression);
-string emitProgram(Statement* statement);
+
 #endif
