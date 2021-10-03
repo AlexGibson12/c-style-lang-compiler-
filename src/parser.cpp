@@ -1,5 +1,5 @@
-#include "parser.h"
-#include "scope.h"
+#include "../headers/parser.h"
+#include "../headers/scope.h"
 Parser::Parser(vector<Token> inittokens){
     tokens = inittokens;
 }

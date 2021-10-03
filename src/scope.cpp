@@ -1,6 +1,4 @@
-#ifndef crap_scope_h
-#define crap_scope_h
-#include "ast.h"
+#include "../headers/scope.h"
 
 
 vector<Expression*>* FindExpressions(Statement* statements){
@@ -141,4 +139,3 @@ bool CheckScope(Statement* statements){
     return true;
 }
 
-#endif

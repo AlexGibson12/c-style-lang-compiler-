@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "../headers/lexer.h"
 Lexer::Lexer(string initialinput){
     input = initialinput;
     inputpointer =0 ;

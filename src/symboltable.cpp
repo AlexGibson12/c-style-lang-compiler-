@@ -1,4 +1,4 @@
-#include "symboltable.h"
+#include "../headers/symboltable.h"
 SymbolTable::SymbolTable(){
     maintable  = map<string,symbolentry*> {};
 }

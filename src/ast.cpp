@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "../headers/ast.h"
 
 CompoundStatement::CompoundStatement(Statement* initcurrentstatement,CompoundStatement* initnextstatements){
             currentstatement = initcurrentstatement;
