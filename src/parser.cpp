@@ -109,6 +109,26 @@ Statement* Parser::consumeassign(){
     Statement* assignment = new AssignStatement {identname,resultexpr};
     return assignment;
 }
+Statement* Parser::consumefor(){
+
+}
+Statement* Parser::consumeifelse(){
+    Match('i');
+    Match('(');
+    Expression* cond = expression();
+    Match(')');
+    CompoundStatement* compoundstat = compound();
+    if(currenttoken.type == ELSE){
+        Match('e');
+        CompoundStatement* compoundstat2 = compound();
+        Statement* ifelsestat = new IfElseStatement {cond,compoundstat,compoundstat2};
+        return ifelsestat;
+    }else{
+        Statement* ifstat = new IfStatement {cond,compoundstat};
+        cout << "GOT HERE";
+        return ifstat;
+    }
+}
 CompoundStatement* Parser::statements(){
     //Identifying start of statement - either identifier or print or while
     Statement* resultstate;
@@ -119,6 +139,9 @@ CompoundStatement* Parser::statements(){
             break;
         case WHILE:
             resultstate = consumewhile();
+            break;
+        case IF:
+            resultstate = consumeifelse();
             break;
         case IDENTIFIER:
             resultstate = consumeassign();

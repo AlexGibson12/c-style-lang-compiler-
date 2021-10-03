@@ -15,12 +15,13 @@ class Parser{
         Statement* consumewhile();
         Statement* consumeprint();
         Statement* consumeassign();
+        Statement* consumeifelse();
+        Statement* consumefor();
         Expression* expression();
         Expression* GreaterRight();
         Expression* PlusFactor();
         Expression* PlusRight();
         Expression* Factor();
-        
         CompoundStatement* statements();
         CompoundStatement* compound();
       

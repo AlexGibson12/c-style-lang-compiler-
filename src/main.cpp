@@ -16,12 +16,15 @@ int main(int argc, char** argv){
     }
     Lexer lex = Lexer(input);
     vector<Token> tokens = lex.tokenize();
-   
+   for(auto x: tokens){
+       cout << x.name << endl;
+   }
     Parser parse = Parser(tokens);
 
     CompoundStatement* statementsa = parse.Parse();
-
+    cout << "PARSED" << endl;
     CompleteSymbolTables(statementsa);
+    cout << "GOT PAST SYMBOLS" << endl;
     CodeGenerator  codegen = CodeGenerator(statementsa);
     if(CheckScope(statementsa)){
         

@@ -143,6 +143,50 @@ string  CodeGenerator::emitCode(Statement* statement){
                 maxlabel+=2;
                 return x;
             }
+            case STATIFELSE:{
+                string x;
+             
+                cout << "GOT HERE";
+                maxlabel+=1;
+                int iflabel = maxlabel;
+                x+=emitCode(statement->condition);
+                x+="pop rax\n";
+                maxstack-=1;
+                x+="cmp rax,0\n";
+                x+=("jne .ifstat"+to_string(iflabel)+"\n");
+                maxlabel+=1;
+                int elselabel = maxlabel;
+                maxlabel+=1;
+                int endlabel = maxlabel;
+                x+=("jmp .elsestat" + to_string(elselabel) + "\n");
+                x+=(".ifstat"+to_string(iflabel) + ":\n");
+                x+=emitCode(statement->valid);
+                x+=("jmp .done" + to_string(endlabel) + "\n");
+                x+=(".elsestat" + to_string(elselabel) + ":\n");
+                x+=emitCode(statement->invalid);
+                x+=(".done" + to_string(endlabel)+":\n");
+                maxlabel+=1;
+                return x;
+                break;
+            }
+            case STATIF:{
+                string x;
+                cout << "GOT HERE";
+                maxlabel+=1;
+                int iflabel = maxlabel;
+                x+=emitCode(statement->condition);
+                x+="pop rax\n";
+                maxstack-=1;
+                x+="cmp rax,0\n";
+                x+=("jne .ifstat"+to_string(iflabel)+"\n");
+                int donelabel = maxlabel;
+                x+=("jmp .done" + to_string(donelabel) + "\n");
+                x+=(".ifstat" + to_string(iflabel) + ":\n");
+                x+=emitCode(statement->statements);
+                x+=(".done" + to_string(donelabel)+":\n");
+                maxlabel+=1;
+                return x;
+            }
         }
     }else{
         return "";
