@@ -185,9 +185,13 @@ void TrickleStartSymbolTable(Statement* statement){
         case STATWHILE:{
             Statement* whilestatement =statement;
             (whilestatement->condition)->symboltable = whilestatement->symboltable;
+            if(whilestatement->statements){
             (whilestatement->statements)->symboltable = whilestatement->symboltable;
+            }
             TrickleSymbolTableDown(whilestatement->condition);
-            TrickleSymbolTableDown(whilestatement->statements);
+            if(whilestatement->statements){
+            CompleteSymbolTables(whilestatement->statements);
+            }
             break;
         }
         case STATPRINT:{
@@ -201,7 +205,7 @@ void TrickleStartSymbolTable(Statement* statement){
             (ifstatement->condition)->symboltable = ifstatement->symboltable;
             (ifstatement->statements)->symboltable = ifstatement->symboltable;
             TrickleSymbolTableDown(ifstatement->condition);
-            TrickleSymbolTableDown(ifstatement->statements);
+            CompleteSymbolTables(ifstatement->statements);
             break;
         }
         case STATIFELSE:{
@@ -210,8 +214,8 @@ void TrickleStartSymbolTable(Statement* statement){
             (ifelsestatement->valid)->symboltable = ifelsestatement->symboltable;
             (ifelsestatement->invalid)->symboltable = ifelsestatement->symboltable;
             TrickleSymbolTableDown(ifelsestatement->condition);
-            TrickleSymbolTableDown(ifelsestatement->valid);
-            TrickleSymbolTableDown(ifelsestatement->invalid);
+            CompleteSymbolTables(ifelsestatement->valid);
+            CompleteSymbolTables(ifelsestatement->invalid);
             break;
         }
         case STATFOR:{
@@ -221,7 +225,7 @@ void TrickleStartSymbolTable(Statement* statement){
             (forstatement->statements)->symboltable = forstatement->symboltable;
             TrickleSymbolTableDown(forstatement->condition);
             TrickleSymbolTableDown(forstatement->next);
-            TrickleSymbolTableDown(forstatement->statements);
+            CompleteSymbolTables(forstatement->statements);
             break;
         }
     }

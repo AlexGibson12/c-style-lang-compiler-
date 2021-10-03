@@ -156,9 +156,8 @@ int main(){
     cout << (statementsa->nextstatements)->statementtype << endl;
     cout << "WONG" << endl;
     CompleteSymbolTables(statementsa);
-    for(auto& x : (((statementsa->nextstatements))->symboltable).maintable){
-        cout << x.first;
-    }
+
+
 
 }
 
