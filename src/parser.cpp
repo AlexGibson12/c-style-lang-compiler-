@@ -74,7 +74,7 @@ Expression* Parser::GreaterRight(){
     return plusfactore;
 }
 Expression* Parser::PlusFactor(){
-    Expression* factore = Factor();
+    Expression* factore = TimesFactor();
     ArithmeticOperator* mainoperator;
     ArithmeticOperator* addoperator = new ArithmeticOperator{OPPLUS};
     ArithmeticOperator* minusoperator = new ArithmeticOperator(OPMINUS);
@@ -86,13 +86,31 @@ Expression* Parser::PlusFactor(){
         }
         Match('+');
      
+        Expression* nextfactor = TimesFactor();
+       
+        factore = new ArithmeticOp{mainoperator,factore,nextfactor};
+    }
+    return factore;
+}
+Expression * Parser::TimesFactor(){
+    Expression* factore = Factor();
+    ArithmeticOperator* mainoperator;
+    ArithmeticOperator* timesoperator = new ArithmeticOperator{OPTIMES};
+    ArithmeticOperator* modulooperator = new ArithmeticOperator(OPMODULO);
+    while(currenttoken.type == TIMES or currenttoken.type == MODULO){
+            if(currenttoken.type == TIMES){
+            mainoperator = timesoperator;
+        }else{
+            mainoperator = modulooperator;
+        }
+        Match('*');
+     
         Expression* nextfactor = Factor();
        
         factore = new ArithmeticOp{mainoperator,factore,nextfactor};
     }
     return factore;
 }
-
 Statement* Parser::consumeprint(){
     Match('p');
     Match('(');

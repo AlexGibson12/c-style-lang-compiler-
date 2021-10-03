@@ -22,6 +22,7 @@ class Parser{
         Expression* PlusFactor();
         Expression* PlusRight();
         Expression* Factor();
+        Expression* TimesFactor();
         CompoundStatement* statements();
         CompoundStatement* compound();
       

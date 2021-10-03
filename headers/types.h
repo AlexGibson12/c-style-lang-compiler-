@@ -20,6 +20,7 @@ typedef enum {
     OPGTE,
     OPNOT,
     OPEQUAL,
+    OPMODULO,
 } OperationType;
 class Operation {
     public:

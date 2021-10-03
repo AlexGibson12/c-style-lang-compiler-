@@ -23,6 +23,19 @@ string CodeGenerator::emitCode(Operation* operation){
         case OPPLUS:{
             return "add rax,rdx\n";
         }
+        case OPMODULO:{
+            string x;
+            x+="push rcx\n";
+            x+="mov rcx,rdx\n";
+            x+="xor rdx,rdx\n";
+            x+= "div rcx\n";
+            x+="pop rcx\n";
+            x+= "mov rax,rdx\n";
+            return x;
+        }
+          case OPTIMES:{
+            return "mul rdx\n";
+        }
         case OPMINUS:{
             return "sub rax,rdx\n";
         }

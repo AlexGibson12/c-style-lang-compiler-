@@ -47,6 +47,10 @@ vector<Token> Lexer::tokenize(){
                 tokens.push_back({PLUS,0,"+"});
                 inputpointer++;
                 break;
+            case '%':
+                tokens.push_back({MODULO,0,"%"});
+                inputpointer++;
+                break;
             case '-':
                 tokens.push_back({MINUS,0,"-"});
                 inputpointer++;
