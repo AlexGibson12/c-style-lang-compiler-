@@ -12,3 +12,15 @@ Clone the repository then run ./build to compile the compiler. Then use ./compil
 Currently just using nasm for assembling after emitting x64 assembly.
 
 Not optimized at all.
+
+Example:
+
+```
+x = 0;
+while(x<100){
+        if(x%3 == 0){
+                print(x);
+        }
+        x = x+1;
+}
+```
