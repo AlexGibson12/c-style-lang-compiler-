@@ -70,7 +70,7 @@ Expression* Parser::GreaterRight(){
 }
 Expression* Parser::PlusFactor(){
     Expression* factore = Factor();
-    ArithmeticOperator* addoperator = new ArithmeticOperator{"+",""};
+    ArithmeticOperator* addoperator = new ArithmeticOperator{"+","add rax,rdx\n"};
     while(currenttoken.type == PLUS){
         Match('+');
         Expression* nextfactor = Factor();
@@ -165,11 +165,16 @@ int main(){
     CompleteSymbolTables(statementsa);
    
     if(CheckScope(statementsa)){
-        cout << "TRUE" << endl;
+        string x = "echo \"" + emitProgram(statementsa) + "\"" + "|" + " tee " + "output.s";
+        system(x.c_str());
+        x = "nasm -felf64 output.s -o output.o";
+        system(x.c_str());
+        x = "ld output.o fibonacci.o -o output";
+        system(x.c_str());
     }else{
-        cout << "FALSE" << endl;
-    }
 
+    }
+    
 
 }
 

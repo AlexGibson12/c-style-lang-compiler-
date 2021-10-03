@@ -26,7 +26,7 @@ class Expression{
         Expression* expr1;
         Expression* expr2;
         void AnnotateTypes();
-
+        string emitCode(){return "";};
 };
 class CompoundStatement;
 class AssignStatement;
@@ -45,53 +45,62 @@ class Statement{
         CompoundStatement* invalid;
         AssignStatement* initializer;
         AssignStatement* next;
-
+        string emitCode(){ return ""; };
 };
 
 class CompoundStatement : public Statement{
     public:
 
         CompoundStatement(Statement* initcurrentstatement,CompoundStatement* initnextstatements);
+      
         
 };
 class AssignStatement :public Statement{
     public:
         AssignStatement(string initidentifier,Expression* initexpression);
+   
 };
 class PrintStatement :public Statement{
     public:
         PrintStatement(Expression* initexpression);
+       
 };
 class IfStatement :public Statement {
     public:
  
         IfStatement(Expression* initcondition,CompoundStatement* initstatements);
+      
 };
 class IfElseStatement :public Statement {
     public:
     
         IfElseStatement(Expression* initcondition,CompoundStatement* initvalid,CompoundStatement* initinvalid);
+       
 };
 class WhileStatement :public Statement{
     public:
 
         WhileStatement(Expression* initcondition,CompoundStatement* initstatements);
+   
 };
 class ForStatement : public Statement{
     public:
      
         ForStatement(AssignStatement* initinitializer, Expression* initcondition,AssignStatement* initnext,CompoundStatement* statements);
+       
 };
 
 class Literal: public Expression {
     public:
         Literal(int initvalue);
         void AnnotateTypes();
+       
 };
 class Identifier : public Expression {
     public:
         Identifier(string initidentifier);
         void AnnotateTypes();
+        
 };
 
 
@@ -100,6 +109,7 @@ class BinOp : public Expression {
 
         BinOp(Operation* initoperation,Expression* initexpr1,Expression* initexpr2);
         void AnnotateTypes();
+        
             
 
 };
@@ -123,4 +133,8 @@ class LogicalOp : public BinOp {
 void CompleteSymbolTables(Statement* statement);
 void TrickleStartSymbolTable(Statement* statement);
 void TrickleSymbolTableDown(Statement* statement);
+string emitCode(Statement* statement);
+string emitCode(Operation* operation);
+string emitCode(Expression* expression);
+string emitProgram(Statement* statement);
 #endif

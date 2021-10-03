@@ -21,29 +21,31 @@ class Operation {
                 return UNKNOWN; 
             }
         }
+       
 };
 class RelationalOperator : public Operation {
     public:
-        RelationalOperator(string initoperation,string code){
+        RelationalOperator(string initoperation,string initcode){
             typetable = {{{INT,INT},BOOL},{{INT,BOOL},UNKNOWN},{{BOOL,INT},UNKNOWN},{{BOOL,BOOL},UNKNOWN}};
             operation = initoperation;
-            code = code;
+            code = initcode;
         }
 };
 class ArithmeticOperator : public Operation {
     public:
-         ArithmeticOperator(string initoperation,string code){
+         ArithmeticOperator(string initoperation,string initcode){
             typetable = {{{INT,INT},INT},{{INT,BOOL},UNKNOWN},{{BOOL,INT},UNKNOWN},{{BOOL,BOOL},UNKNOWN}};
             operation = initoperation;
-            code = code;
+            code = initcode;
         }
+        
 };
 class LogicalOperator : public Operation {
     public:
-         LogicalOperator(string initoperation,string code){
+         LogicalOperator(string initoperation,string initcode){
             typetable = {{{INT,INT},UNKNOWN},{{INT,BOOL},UNKNOWN},{{BOOL,INT},UNKNOWN},{{BOOL,BOOL},BOOL}};
             operation = initoperation;
-            code = code;
+            code = initcode;
         }
 };
 
