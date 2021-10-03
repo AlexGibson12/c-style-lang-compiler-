@@ -1,12 +1,14 @@
 #include "parser.h"
-
+#include "scope.h"
 Parser::Parser(vector<Token> inittokens){
     tokens = inittokens;
 }
 void Parser::Match(char ch){
     inputpointer++;
+
     if(inputpointer < tokens.size()){
         currenttoken = tokens[inputpointer];
+ 
     }else{
         currenttoken =  {END,0,"EOF"};
     }
@@ -84,6 +86,7 @@ Statement* Parser::consumeprint(){
 
     Match(')');
     Statement* printstate = new PrintStatement {resultexpr};
+    Match(';');
     return printstate;
 }
 Statement* Parser::consumewhile(){
@@ -91,21 +94,25 @@ Statement* Parser::consumewhile(){
     Match('(');
     Expression* cond = expression();
     Match(')');
+
     CompoundStatement* compoundstat= compound();
     Statement* whilestat = new WhileStatement {cond,compoundstat};
     return whilestat;
 }
 Statement* Parser::consumeassign(){
+
     string identname = currenttoken.name;
     Match('w');
     Match('=');
     Expression* resultexpr = expression();
+    Match(';');
     Statement* assignment = new AssignStatement {identname,resultexpr};
     return assignment;
 }
 CompoundStatement* Parser::statements(){
     //Identifying start of statement - either identifier or print or while
     Statement* resultstate;
+
     switch(currenttoken.type){
         case PRINT:
             resultstate = consumeprint();
@@ -115,6 +122,9 @@ CompoundStatement* Parser::statements(){
             break;
         case IDENTIFIER:
             resultstate = consumeassign();
+            break;
+        case LBRACE:
+            resultstate = compound();
             break;
         default: 
             return NULL;
@@ -126,6 +136,7 @@ CompoundStatement* Parser::statements(){
 CompoundStatement* Parser::Parse(){
     inputpointer = 0;
     currenttoken = tokens[inputpointer];
+
     return statements();
 }
 CompoundStatement* Parser::compound(){
@@ -133,6 +144,7 @@ CompoundStatement* Parser::compound(){
 
     CompoundStatement* resultstate= statements();
     Match('}');
+ 
     return resultstate;
 }
 int main(){
@@ -140,23 +152,23 @@ int main(){
     fin.open("input.txt",ios::in);
     string input;
     string x;
-    while(fin>>x){
-        input+=x;
-        input+=" ";
+    while(fin >> x){
+        input += x;
+        x += " ";
     }
     Lexer lex = Lexer(input);
     vector<Token> tokens = lex.tokenize();
-    for(auto x: tokens){
-        cout << x.name << " " << x.type << " " << x.value << endl;
-    }
     Parser parse = Parser(tokens);
+
     CompoundStatement* statementsa = parse.Parse();
 
-    cout << "WIN" << endl;
-    cout << (statementsa->nextstatements)->statementtype << endl;
-    cout << "WONG" << endl;
     CompleteSymbolTables(statementsa);
-
+   
+    if(CheckScope(statementsa)){
+        cout << "TRUE" << endl;
+    }else{
+        cout << "FALSE" << endl;
+    }
 
 
 }

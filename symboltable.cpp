@@ -1,6 +1,6 @@
 #include "symboltable.h"
 SymbolTable::SymbolTable(){
-
+    maintable  = map<string,symbolentry*> {};
 }
 SymbolTable::SymbolTable(map<string,symbolentry*> inittable){
     maintable = inittable;
