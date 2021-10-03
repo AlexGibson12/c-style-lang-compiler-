@@ -90,7 +90,9 @@ Statement* Parser::consumeprint(){
 }
 Statement* Parser::consumewhile(){
     Match('w');
+    Match('(');
     Expression* cond = expression();
+
     Match(')');
 
     CompoundStatement* compoundstat= compound();
