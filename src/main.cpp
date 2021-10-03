@@ -16,6 +16,7 @@ int main(int argc, char** argv){
     }
     Lexer lex = Lexer(input);
     vector<Token> tokens = lex.tokenize();
+   
     Parser parse = Parser(tokens);
 
     CompoundStatement* statementsa = parse.Parse();

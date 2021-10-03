@@ -48,15 +48,17 @@ string CodeGenerator::emitCode(Operation* operation){
 string CodeGenerator::emitCode(Expression* expression){
     if(expression){
         switch(expression->expressiontype){
+
             case EXPRBINARYOP:{
                 string x;
                 x += emitCode(expression->expr1);
                 x += emitCode(expression->expr2);
                 x += "pop rdx\n";
                 x += "pop rax\n";
+                maxstack-=2;
                 x += emitCode(expression->operation);
                 x += "push rax\n";
-                maxstack-=1;
+                maxstack+=1;
                 return x;
                 break;
             }
@@ -120,6 +122,26 @@ string  CodeGenerator::emitCode(Statement* statement){
                     x += "call print_number\n";
                     return x;
                     break;
+            }
+            case STATWHILE:{
+                string x;
+                maxlabel+=1;
+                int whilelabel = maxlabel;
+                
+                x+=(".while" + to_string(whilelabel) + ":\n");
+               
+                x+=emitCode(statement->condition);
+                int pastlabel = maxlabel+1;
+                x+="pop rax\n";
+                maxstack-=1;
+                x+="cmp rax,0\n";
+                x+=("je .pastwhile" + to_string(pastlabel) + "\n");
+                x+=emitCode(statement->statements);
+                x+=("jmp .while" + to_string(whilelabel)+"\n");
+                x+= (".pastwhile" + to_string(pastlabel) + ":\n");
+
+                maxlabel+=2;
+                return x;
             }
         }
     }else{

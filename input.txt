@@ -1,4 +1,5 @@
 x = 1;
-y = 2;
-z = y<x;
-print(z);
+while(x<100){
+	print(x);	
+	x = x+1;
+}

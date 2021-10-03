@@ -42,31 +42,21 @@ Expression* Parser::Factor(){
     }
 }
 Expression* Parser::expression(){
-    Expression*  plusfactor = PlusFactor();
-    Expression * right = GreaterRight();
-    if(right){
-        RelationalOperator* reloperator = new RelationalOperator(OPLT);
-        Expression* expressionstuff = new RelOp {reloperator,plusfactor,right};
-    }else{
-        return plusfactor;
-    }
+    return GreaterRight();
    
 }
 Expression* Parser::GreaterRight(){
-    if(currenttoken.type == LT){
-         Match('<');
-         Expression* plusfactore = PlusFactor();
-         Expression* right = GreaterRight();
-         if(right){
-             RelationalOperator* reloperator = new RelationalOperator(OPLT);
-             Expression* expressionstuff = new RelOp {reloperator,plusfactore,right};
-         }else{
-             return plusfactore;
-         }
-    }
-    return NULL;
+    Expression* plusfactore = PlusFactor();
+    RelationalOperator* reloperator = new RelationalOperator(OPLT);
    
-
+    while(currenttoken.type == LT){
+        Match('<');
+    
+        Expression* nextfactor = PlusFactor();
+ 
+        plusfactore = new RelOp{reloperator,plusfactore,nextfactor};
+    }
+    return plusfactore;
 }
 Expression* Parser::PlusFactor(){
     Expression* factore = Factor();
@@ -100,7 +90,6 @@ Statement* Parser::consumeprint(){
 }
 Statement* Parser::consumewhile(){
     Match('w');
-    Match('(');
     Expression* cond = expression();
     Match(')');
 
