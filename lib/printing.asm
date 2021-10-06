@@ -1,6 +1,7 @@
 
-global print_number
+
 section .text:
+	global print_number
 	printnewline:
                 push rdi
                 push rax
