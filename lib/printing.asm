@@ -1,6 +1,6 @@
 
 
-section .text:
+section .text
 	global print_number
 	printnewline:
                 push rdi
