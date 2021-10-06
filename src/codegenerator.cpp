@@ -7,9 +7,9 @@ string CodeGenerator::emitCode(){
     string x;
     maxlabel = 0;
     maxstack = 0;
-    x += "global _start\n";
-    x += "extern print_number\n";
     x += "section .text:\n";
+    x += "extern print_number\n";
+    x += "global _start\n";
     x += "     _start:\n";
     x += "push rbp\n";
     x += "mov rbp,rsp\n";
